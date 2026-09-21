@@ -1,0 +1,29 @@
+# 构建产物
+backend/target/
+frontend/dist/
+frontend/node_modules/
+*.class
+
+# 运行时产生
+redis.log
+*.rdb
+*.aof
+verify/loadtest/out/
+verify/loadtest/tokens.cache
+verify/bitmapbench/out/
+
+# 编辑器 / 系统
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Word 打开文档时生成的锁文件
+~$*
+
+# 本地环境变量。仓库里只保留 .env.example
+.env
+
+# Redis 自带的 Windows 调试符号，39MB 且运行时完全用不到
+tools/redis/*.pdb

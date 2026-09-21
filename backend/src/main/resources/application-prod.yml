@@ -1,0 +1,39 @@
+# prod：论文正式压测用。需要 MySQL + Redis + RabbitMQ 三件齐全
+#       docker compose up -d 之后用 APP_PROFILE=prod 启动
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:course_selection}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_ROOT_PASSWORD:root123456}
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:redis123456}
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 500
+          max-idle: 100
+          min-idle: 20
+  rabbitmq:
+    host: ${RABBITMQ_HOST:127.0.0.1}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:admin}
+    password: ${RABBITMQ_PASS:admin123456}
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: manual
+        concurrency: 8
+        max-concurrency: 32
+        prefetch: 32
+
+app:
+  mq:
+    provider: rabbit

@@ -1,0 +1,94 @@
+:root {
+  --page-bg: #f4f6f4;
+  --ink: #1f2420;
+  --ink-2: #5a635b;
+  --accent: #1d6b62;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: "Noto Sans SC", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.page-head h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.page-head .sub {
+  color: var(--ink-2);
+  font-size: 13px;
+}
+
+.mono {
+  font-family: ui-monospace, Consolas, "JetBrains Mono", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 周课表网格 */
+.tt-grid {
+  display: grid;
+  grid-template-columns: 56px repeat(7, 1fr);
+  gap: 3px;
+  background: #e3e8e2;
+  border: 1px solid #e3e8e2;
+  overflow-x: auto;
+}
+
+.tt-cell {
+  background: #fff;
+  min-height: 42px;
+  padding: 4px 6px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.tt-head {
+  background: #eef2ee;
+  font-weight: 600;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tt-period {
+  background: #eef2ee;
+  text-align: center;
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.tt-busy {
+  background: #e2edea;
+  border-left: 3px solid var(--accent);
+}
+
+.tt-busy .name { font-weight: 600; }
+.tt-busy .meta { color: var(--ink-2); font-size: 11px; }
+
+.remain-low { color: #a63527; font-weight: 600; }
+.remain-ok { color: var(--accent); font-weight: 600; }

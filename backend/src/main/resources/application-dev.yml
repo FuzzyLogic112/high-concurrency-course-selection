@@ -1,0 +1,46 @@
+# dev：全部跑在本机，不需要任何服务器
+#   数据库   -> H2 内存库（MySQL 兼容模式），启动时自动建表，测试数据由 DataInitializer 生成
+#   消息队列 -> 进程内队列（InMemoryMessageSender），行为与 RabbitMQ 一致但无需外部服务
+#   Redis    -> 连本机真实 Redis（tools/redis）。这一项无法替代：
+#              整个课题的核心论点就是「Redis 单线程执行 Lua 保证原子性」，
+#              用假的 Redis 验证等于没验证。
+spring:
+  # dev 没有 RabbitMQ，排掉它的自动配置，否则启动时会不停重连报错
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+  datasource:
+    url: jdbc:h2:mem:course_selection;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+    hikari:
+      maximum-pool-size: 60
+      minimum-idle: 10
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema-h2.sql
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:redis123456}
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 200
+          max-idle: 50
+          min-idle: 10
+
+app:
+  mq:
+    provider: inmemory
+  # 演示数据规模。压测要多少学生就调这里
+  seed:
+    students: 3000
+    classes: 12
