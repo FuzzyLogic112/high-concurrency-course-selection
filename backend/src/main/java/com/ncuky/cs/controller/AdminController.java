@@ -97,9 +97,15 @@ public class AdminController {
     }
 
     /** 重置计数器，每轮压测前调一次 */
+    /**
+     * 实验用：把运行时计数归零。
+     * 原先只清了乐观锁重试数，消费与判重两个计数会跨轮次累加，
+     * 导致每轮读到的都是从服务启动至今的总量，而不是本轮的。
+     */
     @PostMapping("/stats/reset")
     public R<Void> resetStats() {
         optimistic.resetRetryCount();
+        consumer.resetCounters();
         return R.ok();
     }
 

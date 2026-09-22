@@ -57,6 +57,12 @@ public class SelectionConsumer {
         return handled.sum();
     }
 
+    /** 实验用：把消费计数归零，让每轮压测从同一起点统计 */
+    public void resetCounters() {
+        handled.reset();
+        duplicated.reset();
+    }
+
     public long duplicatedCount() {
         return duplicated.sum();
     }

@@ -84,6 +84,16 @@ public class LoadTest {
         int capacity = resetAndPrepare();
         List<String> tokens = prepareStudentTokens(concurrency);
 
+        // 并发数由「拿到多少个互不相同的学生 token」决定 —— 每个请求必须是不同学生，
+        // 否则 Lua 脚本的 SISMEMBER 判重会把第二个起的请求全挡掉，测出来的是判重而不是名额争抢。
+        // 种子学生数不足时登录会静默失败，若不在这里叫停，CSV 里会记下一个从未真正跑过的并发数。
+        if (tokens.size() < concurrency) {
+            System.err.printf("只拿到 %d 个学生 token，达不到要求的 %d 并发。%n", tokens.size(), concurrency);
+            System.err.printf("种子学生数需不少于并发数：启动后端时设 app.seed.students=%d，%n", concurrency);
+            System.err.println("并删除 verify/loadtest/tokens.cache 让它重新登录。");
+            System.exit(1);
+        }
+
         Result r = fire(tokens, capacity);
         report(r, capacity);
         exec.shutdown();
