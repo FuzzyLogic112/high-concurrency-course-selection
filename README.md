@@ -20,6 +20,10 @@
 | WATCH 乐观锁 | 50 | 0 | 0 | 3273 | 475 |
 | **Lua 原子脚本** | 50 | 0 | **0** | 0 | **3627** |
 
+并发加到 1000、2000 时，无保护方案的超选人数跟着线性上涨，另外两种始终为 0：
+
+![500 / 1000 / 2000 并发下三种方案的超选人数](docs/images/bench-oversell.png)
+
 ![Redis 层三方案吞吐对比](docs/images/bench-redis-qps.png)
 
 WATCH 方案正确性没问题，但它靠的是「冲突了就重试」——3273 次重试换来 50 次成功，98.5% 的计算是白做的。Lua 把判断和扣减合并成一次服务端执行，既没有冲突也不需要重试，吞吐是前者的 **7.6 倍**。
@@ -82,6 +86,8 @@ return (a[0] & b[0]) != 0 || (a[1] & b[1]) != 0;
 | 6 | 142.6 ms | 232.0 ms | 3.5 ms |
 | 12 | 178.9 ms | 414.9 ms | **3.7 ms** |
 
+![200 万次冲突校验耗时：朴素比对与时间位图](docs/images/bench-bitmap.png)
+
 位图耗时**与已选课程数无关**。按位与的结果本身还指明了冲突在哪几节，可以直接告诉学生"周三第 4、5 节冲突"，而不是笼统一句"时间冲突"。
 
 ### 3 · 本地消息表：异步落库不丢数据
@@ -129,6 +135,9 @@ return (a[0] & b[0]) != 0 || (a[1] & b[1]) != 0;
 <tr>
 <td><img src="docs/images/ui-teacher.png" alt="教师端"><br><sub><b>教师 · 任课与名单</b>　只读，可导出 CSV</sub></td>
 <td><img src="docs/images/ui-admin.png" alt="教务后台"><br><sub><b>教务 · 后台</b>　运行时切换扣减策略与对账</sub></td>
+</tr>
+<tr>
+<td colspan="2" align="center"><img src="docs/images/ui-login.png" alt="登录页" width="70%"><br><sub><b>登录</b>　内置学生、教师、教务演示账号，口令以 BCrypt 加盐哈希存储</sub></td>
 </tr>
 </table>
 
